@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.envers.Audited;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,33 +15,34 @@ import java.util.List;
  */
 @Entity
 @Table(name = "districts")
+@Audited
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class District {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @Column(nullable = false)
     private String name;
-    
+
     @Column
     private String code;
-    
+
     @Column
     private Integer population;
-    
+
     // Many districts belong to one region (Many-to-One relationship)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "region_id", nullable = false)
     private Region region;
-    
+
     // One district can have many voters (One-to-Many relationship)
     @OneToMany(mappedBy = "district", cascade = CascadeType.ALL)
     private List<Voter> voters = new ArrayList<>();
-    
+
     // Many districts can have many polling stations (Many-to-Many relationship)
     @ManyToMany
     @JoinTable(
